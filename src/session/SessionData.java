@@ -29,10 +29,27 @@ public class SessionData {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SessionData that = (SessionData) o;
+
+        if (sessionNo != that.sessionNo) return false;
+        if (!username.equals(that.username)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = username.hashCode();
+        result = 31 * result + sessionNo;
+        return result;
+    }
+
+    @Override
     public String toString() {
-        return "SessionData{" +
-                "username='" + username + '\n' +
-                ", sessionNo=" + sessionNo +
-                '}';
+        return "{ username='" + username +", sessionNo=" + sessionNo +"}\n";
     }
 }

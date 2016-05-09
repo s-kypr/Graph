@@ -29,7 +29,6 @@ public class SessionDB {
         return timestamps;
     }
 
-    /* TODO: to make the session select with range*/
     public ArrayList<Integer> getSessionItems (String username, Timestamp firstDay, Timestamp lastDay) throws SQLException {
 
         PreparedStatement statement = connection.prepareStatement("select distinct articleID from "+table+" where username = ? and timestamp BETWEEN ? and ?");
@@ -50,7 +49,8 @@ public class SessionDB {
 //            System.out.println("");
             items.add(Integer.parseInt(columnValue));
         }
-
         return items;
     }
+
+
 }

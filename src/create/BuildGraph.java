@@ -64,6 +64,9 @@ public class BuildGraph {
 
         System.out.println(graph.printItemNodes());
 
+//        itemDB.getItemSessions(42);
+
+
 
 
 

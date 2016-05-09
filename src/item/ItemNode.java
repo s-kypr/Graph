@@ -60,10 +60,12 @@ public class ItemNode {
         String userString = null;
 
         for (SessionNode sessionNode : sessions) {
-            if (sessionString != null)
-                sessionString += ", " + sessionNode.getSessionData().toString();
-            else
-                sessionString = sessionNode.getSessionData().toString();
+            if (sessionNode != null) {
+                if (sessionString != null)
+                    sessionString += ", " + sessionNode.getSessionData().toString();
+                else
+                    sessionString = sessionNode.getSessionData().toString();
+            }
         }
         for (UserNode userNode : users) {
             if (userString != null)

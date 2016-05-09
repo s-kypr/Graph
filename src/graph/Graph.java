@@ -21,8 +21,8 @@ public class Graph {
     private HashMap<Integer, ItemNode> itemNodes;
     private HashMap<SessionData, SessionNode> sessionNodes;
     private HashMap<String, UserNode> userNodes;
-    private long timeWindow;                            // n day to milliseconds.
-    private Timestamp firstDay;
+    private static long timeWindow;                            // n day to milliseconds.
+    private static Timestamp firstDay;
 
 
     public Graph(int timeWindow, Timestamp firstDay) {
@@ -66,17 +66,15 @@ public class Graph {
     public void createSessionNode(ArrayList<Timestamp> timestamps, String username){
 
         for (Timestamp time : timestamps){
-            long diff = time.getTime() - firstDay.getTime();    // find the days in mill sec
-            int sessionNo = (int) (diff / timeWindow);                    //divide to find the session
+            int sessionNo = findSessionNo(time);
 
-            SessionData sessionData = null;
-
-            if (sessionNo == 0 && (diff % timeWindow != 0))
-                sessionData = new SessionData(username, sessionNo);     //in case there is mod -> bucket 0
-            else
-                sessionData = new SessionData(username, sessionNo + 1); //in all other add 1
+            SessionData sessionData = new SessionData(username, sessionNo);
 
             if (!sessionNodes.containsKey(sessionData)) {
+
+                if (username.equals("7a4b9f0cd9a289c216dedbd8a3cb4609"))
+                    System.out.println("-- "+sessionData.getUsername()+" "+sessionData.getSessionNo());
+
                 Timestamp firstDay = new Timestamp(this.firstDay.getTime() + sessionNo * timeWindow);
                 SessionNode sessionNode = new SessionNode(sessionData, firstDay);
                 sessionNodes.put(sessionData, sessionNode);
@@ -129,32 +127,55 @@ public class Graph {
 
     }
 
-    //TODO: update items with USERS and SESSIONS
     public void updateItemNodes(ItemDB itemDB){
 
         for (Integer itemID : itemNodes.keySet()){
             ItemNode node = itemNodes.get(itemID);
 
+            /* add user nodes */
             ArrayList<String> usernames = null;
-
             try {
                 usernames = itemDB.getItemUsers(itemID);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
-            /* add user nodes */
             for (String username : usernames){
                 UserNode userNode = userNodes.get(username);
                 node.addUser(userNode);
             }
 
             /* add session nodes*/
+            ArrayList<SessionData> sessions = null;
 
-            //TODO SESSIONS
+            try {
+                sessions = itemDB.getItemSessions(itemID);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            }
 
+            for (SessionData sessionData: sessions){
+                SessionNode sessionNode = sessionNodes.get(sessionData);
+                node.addSession(sessionNode);
+            }
         }
 
+    }
+
+    public static int findSessionNo(Timestamp timestamp){
+        long diff = timestamp.getTime() - firstDay.getTime();    // find the days in mill sec
+        int sessionNo = (int) (diff / timeWindow);                    //divide to find the session
+
+       if (sessionNo == 0 && (diff % timeWindow != 0))
+            sessionNo = 0;                                       //in case there is mod -> bucket 0
+        else
+            sessionNo = sessionNo + 1;              //in all other add 1
+
+        return sessionNo;
     }
 
     @Override
@@ -184,8 +205,8 @@ public class Graph {
 
     public String printSessionNodes(){
         String toPrint = null;
-            for (SessionData sessionData: sessionNodes.keySet())
-                toPrint = toPrint+ "\n"+ " " + sessionNodes.get(sessionData).toString();
+        for (SessionData sessionData: sessionNodes.keySet())
+            toPrint = toPrint+ "\n"+ " " + sessionNodes.get(sessionData).toString();
         return toPrint;
     }
 
@@ -228,15 +249,5 @@ public class Graph {
     public void setFirstDay(Timestamp firstDay) {
         this.firstDay = firstDay;
     }
-
-    //    public boolean addItemNode(ItemNode node) {
-//        /* If the node already exists, don't do anything. */
-//        if (mGraph.containsKey(node))
-//            return false;
-//
-//        /* Otherwise, add the node with an empty set of outgoing edges. */
-//        mGraph.put(node, new HashSet<T>());
-//        return true;
-//    }
 
 }

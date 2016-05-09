@@ -1,5 +1,8 @@
 package item;
 
+import graph.Graph;
+import session.SessionData;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -56,6 +59,23 @@ public class ItemDB {
         }
 
         return  usernames;
+    }
+
+    public ArrayList<SessionData> getItemSessions(Integer itemID) throws SQLException, IllegalAccessException, InstantiationException {
+        ArrayList<SessionData> sessions = new ArrayList<SessionData>();
+
+        PreparedStatement statement = connection.prepareStatement("select username,timestamp from "+table+" where articleID = ? group by username, timestamp");
+        statement.setInt(1, itemID);
+        ResultSet resultSet = statement.executeQuery();
+
+        while (resultSet.next()) {
+            int sessionNo = Graph.findSessionNo(resultSet.getTimestamp(2));
+
+            SessionData sessionData = new SessionData(resultSet.getString(1), sessionNo);
+            sessions.add(sessionData);
+        }
+
+        return sessions;
     }
 
 
