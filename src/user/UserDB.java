@@ -27,9 +27,6 @@ public class UserDB {
         while (resultSet.next()) {
             int i = 1;
             String columnValue = resultSet.getString(i);
-            System.out.print(j+") "+columnValue + " -> " + resultSetMetaData.getColumnName(i));
-            j++;
-            System.out.println("");
             usernames.add(columnValue);
         }
 

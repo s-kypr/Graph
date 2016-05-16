@@ -26,8 +26,8 @@ public class Graph {
 
 
     public Graph(int timeWindow, Timestamp firstDay) {
-        this.timeWindow = TimeUnit.DAYS.toMillis(timeWindow);
-        this.firstDay = firstDay;
+        Graph.timeWindow = TimeUnit.DAYS.toMillis(timeWindow);
+        Graph.firstDay = firstDay;
 
         this.userNodes = new HashMap<String, UserNode>();
         this.itemNodes = new HashMap<Integer, ItemNode>();
@@ -42,10 +42,16 @@ public class Graph {
         }
     }
 
-    public void createItemNodes(ArrayList<Integer> items){
+    public void createItemNodes(ArrayList<Integer> items, ItemDB itemDB){
 
         for (Integer itemID : items){
-            ItemNode node = new ItemNode(itemID);
+            HashMap<String,Integer> tags = new HashMap<String, Integer>();
+            try {
+                tags = itemDB.getItemTags(itemID);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            ItemNode node = new ItemNode(itemID, tags);
             itemNodes.put(itemID, node);
         }
     }
@@ -72,10 +78,7 @@ public class Graph {
 
             if (!sessionNodes.containsKey(sessionData)) {
 
-                if (username.equals("7a4b9f0cd9a289c216dedbd8a3cb4609"))
-                    System.out.println("-- "+sessionData.getUsername()+" "+sessionData.getSessionNo());
-
-                Timestamp firstDay = new Timestamp(this.firstDay.getTime() + sessionNo * timeWindow);
+                Timestamp firstDay = new Timestamp(Graph.firstDay.getTime() + sessionNo * timeWindow);
                 SessionNode sessionNode = new SessionNode(sessionData, firstDay);
                 sessionNodes.put(sessionData, sessionNode);
             }
@@ -178,6 +181,24 @@ public class Graph {
         return sessionNo;
     }
 
+    public int getUserItemCon(){
+        int pairs = 0;
+        for (String username : userNodes.keySet()){
+            UserNode node = userNodes.get(username);
+            pairs += node.getItems().size();
+        }
+        return pairs;
+    }
+
+    public int getItemSessionCon(){
+        int pairs = 0;
+        for (int articleID : itemNodes.keySet()){
+            ItemNode node = itemNodes.get(articleID);
+            pairs += node.getSessions().size();
+        }
+        return pairs;
+    }
+
     @Override
     public String toString() {
         return "Graph{" +
@@ -239,7 +260,7 @@ public class Graph {
     }
 
     public void setTimeWindow(int timeWindow) {
-        this.timeWindow = timeWindow;
+        Graph.timeWindow = timeWindow;
     }
 
     public Timestamp getFirstDay() {
@@ -247,7 +268,7 @@ public class Graph {
     }
 
     public void setFirstDay(Timestamp firstDay) {
-        this.firstDay = firstDay;
+        Graph.firstDay = firstDay;
     }
 
 }

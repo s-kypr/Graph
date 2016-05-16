@@ -5,6 +5,7 @@ import session.SessionData;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by sofia on 4/17/16.
@@ -30,13 +31,26 @@ public class ItemDB {
         while (resultSet.next()) {
             int i = 1;
             String columnValue = resultSet.getString(i);
-            System.out.print(j+") "+columnValue + " -> " + resultSetMetaData.getColumnName(i));
-            j++;
-            System.out.println("");
             items.add(Integer.parseInt(columnValue));
         }
 
         return items;
+    }
+
+    public HashMap<String, Integer> getItemTags(Integer itemID) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement("select distinct tag, count(tag) as c from "+table+" where articleID = ? and tag!=\"no-tag\" group by tag;");
+        statement.setInt(1, itemID);
+        ResultSet resultSet = statement.executeQuery();
+        ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+
+        HashMap<String, Integer> tags = new HashMap<String, Integer>();
+
+        while (resultSet.next()) {
+            tags.put(resultSet.getString(1), resultSet.getInt(2));
+        }
+
+        return  tags;
+
     }
 
     public ArrayList<String> getItemUsers(Integer itemID) throws SQLException {

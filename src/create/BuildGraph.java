@@ -18,14 +18,19 @@ public class BuildGraph {
     public static void main(String[] args) throws Exception {
 
         /******* BUILD GRAPH ***********/
+        int timewindow = 30;
 
         /*** establish a connection ***/
         Database db = new Database("users_posted_papers");
         Connection connection = null;
-        connection = db.getConnection();
+        connection = Database.getConnection();
+
+        System.out.println("Initializing graph..");
 
         /* init graph*/
-        Graph graph = new Graph(30, db.getFistDate(connection, db.getTABLE()));
+        Graph graph = new Graph(timewindow, Database.getFistDate(connection, db.getTABLE()));
+        System.out.println("timewindow: "+timewindow+" days");
+        System.out.println("Creating nodes...");
 
         /** create userNodes -> without items **/
         UserDB userDB = new UserDB(connection, db.getTABLE());
@@ -35,7 +40,7 @@ public class BuildGraph {
         /** create itemNodes -> without sessions, users**/
         ItemDB itemDB = new ItemDB(connection,db.getTABLE());
         ArrayList<Integer> items = itemDB.getDBitems();
-        graph.createItemNodes(items);
+        graph.createItemNodes(items, itemDB);
 
 
         /** create sessionNodes -> without items **/
@@ -45,7 +50,7 @@ public class BuildGraph {
 
         /*** MAKE CONNECTIONS***/
 
-        System.out.println("MAKING CONNECTIONS");
+        System.out.println("Creating edges...");
 
         /* update user nodes with items*/
         graph.updateUserNodes(userDB);
@@ -56,19 +61,21 @@ public class BuildGraph {
         /* update item nodes with users*/
         graph.updateItemNodes(itemDB);
 
-
-
-        System.out.println("Fist day: "+graph.getFirstDay().getTime());
-
 //        System.out.println(graph.printSessionNodes());
 
+//        System.out.println(graph.printItemNodes());
+
+
+        System.out.println("\nNodes:");
+        System.out.println("Users   : "+graph.getUserNodes().size());
+        System.out.println("Items   : "+graph.getItemNodes().size());
+        System.out.println("Sessions: "+graph.getSessionNodes().size());
+
+        System.out.println("\nPairs:");
+        System.out.println("user    <-> item : "+graph.getUserItemCon());
+        System.out.println("session <-> item : "+graph.getItemSessionCon());
+
         System.out.println(graph.printItemNodes());
-
-//        itemDB.getItemSessions(42);
-
-
-
-
 
     }
 

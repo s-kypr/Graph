@@ -4,6 +4,7 @@ package item;
 import session.SessionNode;
 import user.UserNode;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -11,11 +12,14 @@ import java.util.HashSet;
  */
 public class ItemNode {
     private int itemID;
+    private HashMap<String ,Integer> tags;
     private HashSet<SessionNode> sessions;
     private HashSet<UserNode> users;
 
-    public ItemNode(int itemID) {
+
+    public ItemNode(int itemID, HashMap<String, Integer> tags) {
         this.itemID = itemID;
+        this.tags = tags;
         this.sessions = new HashSet<SessionNode>();
         this.users = new HashSet<UserNode>();
     }
@@ -38,6 +42,14 @@ public class ItemNode {
         this.itemID = itemID;
     }
 
+    public HashMap<String, Integer> getTags() {
+        return tags;
+    }
+
+    public void setTags(HashMap<String, Integer> tags) {
+        this.tags = tags;
+    }
+
     public HashSet<SessionNode> getSessions() {
         return sessions;
     }
@@ -58,6 +70,7 @@ public class ItemNode {
     public String toString() {
         String sessionString = null;
         String userString = null;
+        String tagString = null;
 
         for (SessionNode sessionNode : sessions) {
             if (sessionNode != null) {
@@ -74,7 +87,13 @@ public class ItemNode {
                 userString = userNode.getUsername();
         }
 
-        return itemID+"-> \n\tusers: "+userString+" \n" + "\tsessions: "+sessionString;
+        for (String tag : tags.keySet())
+            if (tagString != null)
+                tagString += ", "+"("+tag+","+tags.get(tag)+")";
+            else
+                tagString = "("+tag+","+tags.get(tag)+")";
+
+        return itemID+"-> \n\tusers: "+userString+" \n\tsessions: "+sessionString+" \ttags: "+tagString+"\n";
     }
 }
 
