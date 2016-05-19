@@ -1,4 +1,4 @@
-package session;
+package graph.nodes.session;
 
 /**
  * Created by sofia on 4/17/16.

@@ -1,13 +1,17 @@
 package create;
 
 
+import algorithms.IPF;
 import graph.Graph;
-import item.ItemDB;
-import session.SessionDB;
-import user.UserDB;
+import graph.nodes.item.ItemDB;
+import graph.nodes.session.SessionDB;
+import graph.nodes.user.UserDB;
 
 import java.sql.Connection;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by sofia on 4/13/16.
@@ -52,13 +56,13 @@ public class BuildGraph {
 
         System.out.println("Creating edges...");
 
-        /* update user nodes with items*/
+        /* update graph.nodes.user nodes with items*/
         graph.updateUserNodes(userDB);
 
-        /* update session nodes with items*/
+        /* update graph.nodes.session nodes with items*/
         graph.updateSessionNodes(sessionDB);
 
-        /* update item nodes with users*/
+        /* update graph.nodes.item nodes with users*/
         graph.updateItemNodes(itemDB);
 
 //        System.out.println(graph.printSessionNodes());
@@ -75,7 +79,15 @@ public class BuildGraph {
         System.out.println("user    <-> item : "+graph.getUserItemCon());
         System.out.println("session <-> item : "+graph.getItemSessionCon());
 
-        System.out.println(graph.printItemNodes());
+        String u = "7a4b9f0cd9a289c216dedbd8a3cb4609";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date parsedDate = dateFormat.parse("2005-03-02");
+        Timestamp t = new java.sql.Timestamp(parsedDate.getTime());
+
+        IPF ipf = new IPF(graph,u,t);
+        ipf.setParameters(0.5,0.5,0.6);
+
+        ipf.run();
 
     }
 

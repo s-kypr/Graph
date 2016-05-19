@@ -1,4 +1,4 @@
-package user;
+package graph.nodes.user;
 
 import java.sql.*;
 import java.util.ArrayList;

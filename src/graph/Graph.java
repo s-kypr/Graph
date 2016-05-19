@@ -1,12 +1,12 @@
 package graph;
 
-import item.ItemDB;
-import item.ItemNode;
-import session.SessionDB;
-import session.SessionData;
-import session.SessionNode;
-import user.UserDB;
-import user.UserNode;
+import graph.nodes.item.ItemDB;
+import graph.nodes.item.ItemNode;
+import graph.nodes.session.SessionDB;
+import graph.nodes.session.SessionData;
+import graph.nodes.session.SessionNode;
+import graph.nodes.user.UserDB;
+import graph.nodes.user.UserNode;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -78,6 +78,11 @@ public class Graph {
 
             if (!sessionNodes.containsKey(sessionData)) {
 
+                if (username.equals("7a4b9f0cd9a289c216dedbd8a3cb4609")){
+                    System.out.println(sessionNo);
+                    System.out.println(new Timestamp(Graph.firstDay.getTime() + sessionNo * timeWindow));
+                }
+
                 Timestamp firstDay = new Timestamp(Graph.firstDay.getTime() + sessionNo * timeWindow);
                 SessionNode sessionNode = new SessionNode(sessionData, firstDay);
                 sessionNodes.put(sessionData, sessionNode);
@@ -135,7 +140,7 @@ public class Graph {
         for (Integer itemID : itemNodes.keySet()){
             ItemNode node = itemNodes.get(itemID);
 
-            /* add user nodes */
+            /* add graph.nodes.user nodes */
             ArrayList<String> usernames = null;
             try {
                 usernames = itemDB.getItemUsers(itemID);
@@ -148,7 +153,7 @@ public class Graph {
                 node.addUser(userNode);
             }
 
-            /* add session nodes*/
+            /* add graph.nodes.session nodes*/
             ArrayList<SessionData> sessions = null;
 
             try {
@@ -171,12 +176,12 @@ public class Graph {
 
     public static int findSessionNo(Timestamp timestamp){
         long diff = timestamp.getTime() - firstDay.getTime();    // find the days in mill sec
-        int sessionNo = (int) (diff / timeWindow);                    //divide to find the session
+        int sessionNo = (int) (diff / timeWindow);                    //divide to find the graph.nodes.session
 
        if (sessionNo == 0 && (diff % timeWindow != 0))
             sessionNo = 0;                                       //in case there is mod -> bucket 0
         else
-            sessionNo = sessionNo + 1;              //in all other add 1
+            sessionNo = sessionNo ;                          //in all other add 1
 
         return sessionNo;
     }

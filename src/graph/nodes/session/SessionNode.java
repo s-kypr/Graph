@@ -1,6 +1,7 @@
-package session;
+package graph.nodes.session;
 
-import item.ItemNode;
+import graph.nodes.Node;
+import graph.nodes.item.ItemNode;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -8,8 +9,8 @@ import java.util.HashSet;
 /**
  * Created by sofia on 4/17/16.
  */
-public class SessionNode {
-    private SessionData sessionData;    //username and session number
+public class SessionNode implements Node {
+    private SessionData sessionData;    //username and graph.nodes.session number
     private Timestamp firstDay;
     private HashSet<ItemNode> items;
 
@@ -55,5 +56,16 @@ public class SessionNode {
                 ", firstDay=" + firstDay +
                 ", items=" + items +
                 '}';
+    }
+
+    @Override
+    public int outDegree() {
+        return items.size();
+    }
+
+    @Override
+    public HashSet<Node> out() {
+        HashSet<Node> itemSet = new HashSet<Node>(items);
+        return itemSet;
     }
 }

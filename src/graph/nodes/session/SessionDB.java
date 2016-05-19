@@ -1,4 +1,4 @@
-package session;
+package graph.nodes.session;
 
 import java.sql.*;
 import java.util.ArrayList;

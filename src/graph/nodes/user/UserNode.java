@@ -1,14 +1,15 @@
-package user;
+package graph.nodes.user;
 
 
-import item.ItemNode;
+import graph.nodes.Node;
+import graph.nodes.item.ItemNode;
 
 import java.util.HashSet;
 
 /**
  * Created by sofia on 4/17/16.
  */
-public class UserNode {
+public class UserNode implements Node{
     private String username;
     private HashSet<ItemNode> items;
 
@@ -50,6 +51,17 @@ public class UserNode {
             }
         }
         return username+"-> \n\titems:"+itemString;
+    }
+
+    @Override
+    public int outDegree() {
+        return items.size();
+    }
+
+    @Override
+    public HashSet<Node> out() {
+        HashSet<Node> itemSet = new HashSet<Node>(items);
+        return itemSet;
     }
 }
 

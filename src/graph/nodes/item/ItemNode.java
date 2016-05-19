@@ -1,8 +1,9 @@
-package item;
+package graph.nodes.item;
 
 
-import session.SessionNode;
-import user.UserNode;
+import graph.nodes.Node;
+import graph.nodes.session.SessionNode;
+import graph.nodes.user.UserNode;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,9 +11,10 @@ import java.util.HashSet;
 /**
  * Created by sofia on 4/17/16.
  */
-public class ItemNode {
+public class ItemNode implements Node {
     private int itemID;
     private HashMap<String ,Integer> tags;
+
     private HashSet<SessionNode> sessions;
     private HashSet<UserNode> users;
 
@@ -95,5 +97,29 @@ public class ItemNode {
 
         return itemID+"-> \n\tusers: "+userString+" \n\tsessions: "+sessionString+" \ttags: "+tagString+"\n";
     }
+
+    public int outUserDegree(){
+        return users.size();
+    }
+
+    public int outSessionDegree(){
+        return sessions.size();
+    }
+
+    @Override
+    public int outDegree() {
+        return 0;
+    }
+
+    @Override
+    public HashSet<Node> out() {
+        HashSet<Node> outSet = new HashSet<Node>();
+        outSet.addAll(users);
+        outSet.addAll(sessions);
+
+        return outSet;
+    }
+
+
 }
 
