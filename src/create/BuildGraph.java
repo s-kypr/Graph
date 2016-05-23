@@ -2,6 +2,7 @@ package create;
 
 
 import algorithms.IPF;
+import algorithms.PreFiltering;
 import graph.Graph;
 import graph.nodes.item.ItemDB;
 import graph.nodes.session.SessionDB;
@@ -12,6 +13,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 
 /**
  * Created by sofia on 4/13/16.
@@ -84,10 +86,25 @@ public class BuildGraph {
         Date parsedDate = dateFormat.parse("2005-03-02");
         Timestamp t = new java.sql.Timestamp(parsedDate.getTime());
 
-        IPF ipf = new IPF(graph,u,t);
+        int N = 5;
+
+        System.out.println("\nTop-"+N+" items with IPF");
+        IPF ipf = new IPF(graph,u,t,N);
         ipf.setParameters(0.5,0.5,0.6);
 
-        ipf.run();
+//        ipf.run();
+
+        HashSet<String> tags = new HashSet<String>();
+        tags.add("ml");
+//        tags.add("social-networks");
+//        tags.add("kernels");
+//        tags.add("svm");
+
+        System.out.println("\nTop-"+N+" items with IPF with PreFiltering");
+        PreFiltering prIPF = new PreFiltering(graph,u,t,tags,N);
+        prIPF.setParameters(0.5,0.5,0.6);
+
+        prIPF.run();
 
     }
 

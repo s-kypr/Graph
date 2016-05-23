@@ -78,10 +78,10 @@ public class Graph {
 
             if (!sessionNodes.containsKey(sessionData)) {
 
-                if (username.equals("7a4b9f0cd9a289c216dedbd8a3cb4609")){
+                /*if (username.equals("7a4b9f0cd9a289c216dedbd8a3cb4609")){
                     System.out.println(sessionNo);
                     System.out.println(new Timestamp(Graph.firstDay.getTime() + sessionNo * timeWindow));
-                }
+                }*/
 
                 Timestamp firstDay = new Timestamp(Graph.firstDay.getTime() + sessionNo * timeWindow);
                 SessionNode sessionNode = new SessionNode(sessionData, firstDay);
